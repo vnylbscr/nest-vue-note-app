@@ -6,13 +6,13 @@ export class Note {
   @PrimaryGeneratedColumn('uuid')
   id: number;
 
-  @Column({ type: 'string', default: null })
+  @Column({ type: 'varchar', default: null })
   content: string;
 
   @Column({ type: 'boolean', default: false })
   completed: boolean;
 
-  @Column()
+  @Column({ type: 'json' })
   @OneToOne(() => User, (user) => user.id)
   person: any;
 

@@ -26,6 +26,7 @@ class ConfigService {
       port: Number(this.getValueByKey('POSTGRES_PORT')),
       database: this.getValueByKey('POSTGRES_DATABASE'),
       username: this.getValueByKey('POSTGRES_USER'),
+      entities: ['dist/**/*.entity.js'],
     };
   }
 }

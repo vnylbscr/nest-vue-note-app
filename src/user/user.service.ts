@@ -15,6 +15,19 @@ export class UserService {
     });
   }
 
+  public async updateUser(params: { id: number; name?: string }) {
+    await this.repository.update(
+      {
+        id: params.id,
+      },
+      {
+        fullName: params.name,
+      },
+    );
+
+    const updatedUser = await this.repository.findOne(params.id);
+    return updatedUser;
+  }
   public async createUser(fullName: string) {
     const createdUser = new User();
     createdUser.fullName = fullName;

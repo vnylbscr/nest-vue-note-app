@@ -9,7 +9,7 @@ export class User {
   @Column()
   fullName: string;
 
-  @Column()
+  @Column('int', { array: true })
   @OneToMany(() => Note, (note) => note.id)
   notes: any[];
 

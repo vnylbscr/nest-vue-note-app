@@ -9,15 +9,22 @@ export class NoteService {
     @InjectRepository(Note) private readonly repository: Repository<Note>,
   ) {}
 
-  public async getNote(id: number) {
+  public async getNote(id: string) {
     return await this.repository.findOne({
       id,
     });
   }
 
-  public async createNote(content: string) {
-    const note = new Note();
-    note.content = content;
+  public async getUserNotes(userId: string) {
+    return await this.repository.find({
+      user: {
+        id: userId,
+      },
+    });
+  }
+
+  public async createNote(params: Omit<Note, 'id' | 'createdAt'>) {
+    const note = { ...params };
     return await this.repository.save(note);
   }
 

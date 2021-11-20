@@ -4,18 +4,21 @@ import { User } from './user.entity';
 @Entity({ name: 'notes' })
 export class Note {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
-  @Column({ type: 'varchar', default: null })
+  @Column({ type: 'varchar', default: null, nullable: true })
   content: string;
 
-  @Column({ type: 'boolean', default: false })
+  @Column({ type: 'boolean', default: false, nullable: true })
   completed: boolean;
 
-  @Column({ type: 'json' })
+  @Column('uuid', { nullable: false })
   @OneToOne(() => User, (user) => user.id)
-  person: any;
+  user: User;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'timestamp with time zone',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createdAt: Date;
 }

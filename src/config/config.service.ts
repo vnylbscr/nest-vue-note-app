@@ -1,5 +1,6 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
+//eslint-disable-next-line
 require('dotenv').config();
 
 class ConfigService {
@@ -27,6 +28,7 @@ class ConfigService {
       database: this.getValueByKey('POSTGRES_DATABASE'),
       username: this.getValueByKey('POSTGRES_USER'),
       entities: ['dist/**/*.entity.js'],
+      synchronize: true,
     };
   }
 }

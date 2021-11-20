@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Request } from 'express';
+import { hashPassword } from './user.utils';
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -16,10 +17,11 @@ export class UserController {
   }
 
   @Post('/')
-  async createUser(@Req() req: Request) {
-    const { fullName, password, email } = req.body;
-    console.log('req.boduy', req.body);
-
+  async createUser(
+    @Body('fullName') fullName,
+    @Body('password') password,
+    @Body('email') email,
+  ) {
     return await this.userService.createUser({
       fullName,
       password,

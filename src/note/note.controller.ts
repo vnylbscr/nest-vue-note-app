@@ -1,5 +1,4 @@
-import { Controller, Get, Post, Req } from '@nestjs/common';
-import { Request } from 'express';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { NoteService } from './note.service';
 
 @Controller('note')
@@ -7,20 +6,21 @@ export class NoteController {
   constructor(private readonly noteService: NoteService) {}
 
   @Get('/:userId')
-  async getUserNotes(@Req() req: Request) {
-    const { userId } = req.params;
+  async getUserNotes(@Param('userId') userId: string) {
     return await this.noteService.getUserNotes(userId);
   }
 
   @Get('/:id')
-  async getNote(@Req() req: Request) {
-    const { id } = req.params;
+  async getNote(@Param('id') id: string) {
     return await this.noteService.getNote(id);
   }
 
   @Post('/')
-  async saveNote(@Req() req: Request) {
-    const { content, userId, completed } = req.body;
+  async saveNote(
+    @Body('content') content: string,
+    @Body('userId') userId: any,
+    @Body('completed') completed: boolean,
+  ) {
     return await this.noteService.createNote({
       content,
       user: userId,

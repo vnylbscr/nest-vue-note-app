@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Request } from 'express';
-import { hashPassword } from './user.utils';
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}

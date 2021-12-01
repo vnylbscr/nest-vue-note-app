@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/model/user.entity';
 import { Repository } from 'typeorm';
-import { hashPassword } from './user.utils';
+import { comparePasswords, hashPassword } from './user.utils';
 
 @Injectable()
 export class UserService {
@@ -46,6 +46,33 @@ export class UserService {
     console.log('created user', createdUser);
 
     return await this.repository.save(createdUser);
+  }
+
+  public async login(email: string, password: string) {
+    const foundUser = await this.repository.findOne({
+      email,
+    });
+
+    if (!foundUser) {
+      throw new Error('user not exist');
+    }
+
+    const isValidPassword = await comparePasswords(
+      password,
+      foundUser.password,
+    );
+
+    if (!isValidPassword) {
+      throw new Error('email or password is incorrect');
+    }
+
+    const person = {
+      ...foundUser,
+    };
+
+    delete person['password'];
+
+    return person;
   }
 
   public async getAll() {

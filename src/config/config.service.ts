@@ -28,6 +28,7 @@ class ConfigService {
       database: this.getValueByKey('POSTGRES_DATABASE'),
       username: this.getValueByKey('POSTGRES_USER'),
       entities: ['dist/**/*.entity.js'],
+      password: this.getValueByKey('POSTGRES_PASSWORD'),
       synchronize: true,
     };
   }

@@ -7,7 +7,9 @@ import { Repository } from 'typeorm';
 export class NoteService {
   constructor(
     @InjectRepository(Note) private readonly repository: Repository<Note>,
-  ) {}
+  ) {
+    console.log('merto lala');
+  }
 
   public async getNote(id: string) {
     return await this.repository.findOne({

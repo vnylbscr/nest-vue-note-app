@@ -17,14 +17,22 @@ export class UserController {
 
   @Post('/')
   async createUser(
-    @Body('fullName') fullName,
-    @Body('password') password,
-    @Body('email') email,
+    @Body('fullName') fullName: string,
+    @Body('password') password: string,
+    @Body('email') email: string,
   ) {
     return await this.userService.createUser({
       fullName,
       password,
       email,
     });
+  }
+
+  @Post('/login')
+  async login(
+    @Body('password') password: string,
+    @Body('email') email: string,
+  ) {
+    return await this.userService.login(email, password);
   }
 }

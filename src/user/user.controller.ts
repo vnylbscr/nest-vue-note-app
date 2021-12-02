@@ -9,6 +9,7 @@ export class UserController {
   async getUsers() {
     return await this.userService.getAll();
   }
+
   @Get('/:id')
   async getUser(@Req() req: Request) {
     const { id } = req.params;

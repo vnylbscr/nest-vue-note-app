@@ -41,7 +41,6 @@ export class UserService {
     createdUser.fullName = params.fullName;
     createdUser.email = params.email;
     createdUser.password = await hashPassword(params.password);
-    // createdUser.password = await params.password;
 
     console.log('created user', createdUser);
 

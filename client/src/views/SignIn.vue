@@ -1,23 +1,16 @@
 <template>
   <div class="container">
     <div class="box"></div>
-    <CustomInput
-      :label="label"
-      :value="email"
-      placeholder="merto"
-      @change="handleChange"
-    />
-
-    <p>email is{{ email }}</p>
   </div>
 </template>
 <script>
 import { defineComponent, ref } from '@vue/runtime-core';
-import CustomInput from '../components/Input.vue';
+// import CustomInput from '../components/Input.vue';
+import NavBar from '../components/navbar/NavBar.vue';
 export default defineComponent({
   name: 'SignIn',
   components: {
-    CustomInput,
+    // CustomInput,
   },
   setup() {
     const email = ref('');

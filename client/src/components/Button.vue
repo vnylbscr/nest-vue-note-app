@@ -1,5 +1,5 @@
 <template>
-  <button @click="handleClick" class="main">
+  <button class="ui button primary" @click="handleClick">
     {{ name }}
   </button>
 </template>
@@ -15,7 +15,5 @@ export default {
 .main {
   padding: 8px;
   border-radius: 8px;
-  color: aquamarine;
-  background-color: bisque;
 }
 </style>

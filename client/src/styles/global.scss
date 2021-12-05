@@ -4,5 +4,19 @@ html,
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: 'Fira Sans', sans-serif;
+  font-family: 'Fira Sans', sans-serif !important;
+}
+
+$primary-color: #a8c686;
+$secondary-color: #f0f8ea;
+
+@function spacing($spacing) {
+  @return 8px * $spacing;
+}
+
+@mixin main {
+  background-color: $secondary;
+  padding: calc_space(1);
+  height: 100%;
+  width: 100%;
 }

@@ -1,6 +1,6 @@
 <template>
   <router-link class="active-item" :to="href">
-    <button class="button">
+    <button class="ui primary large button">
       {{ name }}
     </button>
   </router-link>
@@ -22,16 +22,6 @@ export default {
   padding: 4px;
   &:hover {
     color: aqua;
-  }
-  button {
-    padding: 10px;
-    border-radius: 8px;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    &:hover {
-      color: black;
-    }
   }
 }
 </style>

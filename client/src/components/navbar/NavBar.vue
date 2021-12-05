@@ -21,6 +21,11 @@ export default {
     href: String,
     name: String,
   },
+  methods: {
+    handleClick() {
+      console.log('clicked');
+    },
+  },
 };
 </script>
 
@@ -41,7 +46,6 @@ export default {
         transform: scaleX(1.01);
         color: chocolate;
         cursor: pointer;
-        background-color: red;
       }
     }
   }

@@ -1,31 +1,59 @@
 <template>
   <div class="root">
-    <div class="ui two column stackable center aligned page grid">
-      <div class="column twelve wide">
+    <div class="ui equal width center aligned padded grid">
+      <div class="row">
+        <div class="two ui column stackable center end aligned grid">
+          <div class="column twelve wide">
+            <h1 class="ui header">register note app.</h1>
+          </div>
+          <div class="column sixteen wide">
+            <p class="heading">
+              don't have account?
+              <router-link to="/sign-up"> create </router-link>
+            </p>
+          </div>
+        </div>
         <form @submit="handleSubmit">
-          <div class="ui labeled input">
-            <div class="ui label">e-mail or username</div>
-            <input
-              type="text"
-              placeholder="email or username"
-              @change="handleChange"
-              @blur="handleBlur"
-              ref="email"
-              name="email"
-            />
+          <div class="ui five column stackable center aligned page grid">
+            <div class="column sixteen wide">
+              <div
+                v-bind:class="{ error: errors.email }"
+                class="ui fluid labeled input large"
+              >
+                <div class="ui label">e-mail</div>
+                <input
+                  type="text"
+                  placeholder="email or username"
+                  @change="handleChange"
+                  @blur="handleBlur"
+                  ref="email"
+                  name="email"
+                />
+              </div>
+            </div>
+
+            <div class="column sixteen wide">
+              <div
+                v-bind:class="{ error: errors.password }"
+                class="ui labeled fluid input large"
+              >
+                <div class="ui label">password</div>
+                <input
+                  type="password"
+                  placeholder="password"
+                  @change="handleChange"
+                  @blur="handleBlur"
+                  ref="password"
+                  name="password"
+                />
+              </div>
+            </div>
+            <div class="column sixteen wide">
+              <button class="primary fluid large ui button" type="submit">
+                Submit
+              </button>
+            </div>
           </div>
-          <div class="ui labeled input">
-            <div class="ui label">password</div>
-            <input
-              type="text"
-              placeholder="password"
-              @change="handleChange"
-              @blur="handleBlur"
-              ref="password"
-              name="password"
-            />
-          </div>
-          <button class="primary ui button" type="submit">Submit</button>
         </form>
       </div>
     </div>
@@ -33,8 +61,6 @@
 </template>
 <script>
 import { defineComponent, ref } from '@vue/runtime-core';
-// import CustomInput from '../components/Input.vue';
-import NavBar from '../components/navbar/NavBar.vue';
 export default defineComponent({
   name: 'SignIn',
   components: {
@@ -42,8 +68,15 @@ export default defineComponent({
   },
   props: ['click'],
   setup() {
-    const email = ref('');
-    const password = ref('');
+    const EMAIL_REGEX =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    const state = ref({
+      email: '',
+      password: '',
+    });
+
+    const isValid = ref(false);
 
     const errors = ref({
       email: '',
@@ -51,20 +84,55 @@ export default defineComponent({
     });
 
     const handleChange = (e) => {
-      console.log('text is sign in', e.target.value);
-      email.value = e.target.value;
+      state.value = {
+        ...state.value,
+        [e.target.name]: e.target.value,
+      };
     };
 
-    const handleBlur = (e) => {};
+    const handleBlur = () => {
+      console.log('blur worked');
+      if (
+        state.value.email.trim().length === 0 &&
+        state.value.password.trim().length === 0
+      ) {
+        errors.value = {
+          ...errors.value,
+          email: 'email is required',
+          password: 'password is required',
+        };
+        return false;
+      } else if (!EMAIL_REGEX.test(state.value.email)) {
+        errors.value = {
+          ...errors.value,
+          email: 'please provide valid e-mail address',
+        };
+        return false;
+      } else if (errors.value.password.length < 6) {
+        errors.value = {
+          ...errors.value,
+          password: 'password must be at least 6 characters',
+        };
+        return false;
+      } else {
+        errors.value = {
+          email: '',
+          password: '',
+        };
+        return true;
+      }
+    };
 
     const handleSubmit = (e) => {
       e.preventDefault();
-      console.log(e);
+      if (handleBlur()) {
+        console.log('is valid!');
+      }
     };
+
     return {
       handleChange,
-      email,
-      password,
+      errors,
       handleBlur,
       handleSubmit,
     };
@@ -73,17 +141,26 @@ export default defineComponent({
     // this.$ref.email.focus();
     console.log('ulaa');
   },
+  mounted() {
+    this.$refs.email.focus();
+  },
 });
 </script>
 
 <style lang="scss" scoped>
 .root {
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 60px);
   align-items: center;
   justify-content: center;
   display: flex;
-  background-color: #2c7a7b;
+  background: rgb(212, 174, 238);
+  background: linear-gradient(
+    90deg,
+    rgba(212, 174, 238, 1) 14%,
+    rgba(153, 210, 184, 0.68531162464986) 88%
+  );
+
   .box {
     background-color: red;
   }

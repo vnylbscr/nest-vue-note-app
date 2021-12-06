@@ -9,6 +9,8 @@ html,
 
 $primary-color: #a8c686;
 $secondary-color: #f0f8ea;
+$small: 600px;
+$tablet: 900px;
 
 @function spacing($spacing) {
   @return 8px * $spacing;

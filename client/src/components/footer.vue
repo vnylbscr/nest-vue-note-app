@@ -20,11 +20,12 @@ export default {
 <style lang="scss">
 .footer-container {
   width: 100%;
+  height: 100px;
   margin: 24px 0px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: transparent;
+  background-color: transparent;
   p {
     color: darkcyan;
     font-size: 24px;

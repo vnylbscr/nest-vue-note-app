@@ -17,18 +17,35 @@
           <div class="ui five column stackable center aligned page grid">
             <div class="column sixteen wide">
               <div
-                v-bind:class="{ error: errors.email }"
+                v-bind:class="{ error: v$.form.email.$error }"
                 class="ui fluid labeled input large"
               >
                 <div class="ui label">e-mail</div>
                 <input
                   type="text"
-                  placeholder="email or username"
-                  @change="handleChange"
-                  @blur="handleBlur"
+                  placeholder="email"
                   ref="email"
                   name="email"
+                  v-model="v$.form.email.$model"
                 />
+              </div>
+
+              <div v-if="v$.form.email.$error">
+                <div
+                  v-if="v$.form.email.required.$invalid"
+                  class="ui label red floated left"
+                  style="margin-top: 10px"
+                >
+                  e-mail is required
+                </div>
+
+                <div
+                  v-if="v$.form.email.email.$invalid"
+                  class="ui label red floated left"
+                  style="margin-top: 10px"
+                >
+                  e-mail is not valid.
+                </div>
               </div>
             </div>
 
@@ -60,81 +77,38 @@
   </div>
 </template>
 <script>
-import { defineComponent, ref } from '@vue/runtime-core';
+import { defineComponent } from '@vue/runtime-core';
+import useVuelidate from '@vuelidate/core';
+import { required, minLength, email } from '@vuelidate/validators';
 export default defineComponent({
   name: 'SignIn',
-  components: {
-    // CustomInput,
-  },
+  components: {},
   props: ['click'],
   setup() {
-    const EMAIL_REGEX =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-    const state = ref({
-      email: '',
-      password: '',
-    });
-
-    const isValid = ref(false);
-
-    const errors = ref({
-      email: '',
-      password: '',
-    });
-
-    const handleChange = (e) => {
-      state.value = {
-        ...state.value,
-        [e.target.name]: e.target.value,
-      };
-    };
-
-    const handleBlur = () => {
-      console.log('blur worked');
-      if (
-        state.value.email.trim().length === 0 &&
-        state.value.password.trim().length === 0
-      ) {
-        errors.value = {
-          ...errors.value,
-          email: 'email is required',
-          password: 'password is required',
-        };
-        return false;
-      } else if (!EMAIL_REGEX.test(state.value.email)) {
-        errors.value = {
-          ...errors.value,
-          email: 'please provide valid e-mail address',
-        };
-        return false;
-      } else if (errors.value.password.length < 6) {
-        errors.value = {
-          ...errors.value,
-          password: 'password must be at least 6 characters',
-        };
-        return false;
-      } else {
-        errors.value = {
-          email: '',
-          password: '',
-        };
-        return true;
-      }
-    };
-
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      if (handleBlur()) {
-        console.log('is valid!');
-      }
-    };
-
     return {
-      handleChange,
-      errors,
-      handleBlur,
-      handleSubmit,
+      v$: useVuelidate(),
+    };
+  },
+  data() {
+    return {
+      form: {
+        email: '',
+        password: '',
+      },
+    };
+  },
+  validations() {
+    return {
+      form: {
+        email: {
+          required,
+          email,
+        },
+        password: {
+          required,
+          min: minLength(6),
+        },
+      },
     };
   },
   beforeMount() {

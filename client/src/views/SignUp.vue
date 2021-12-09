@@ -13,56 +13,105 @@
             </p>
           </div>
         </div>
-        <form @submit="handleSubmit">
+        <form @submit.prevent="handleSubmit">
           <div class="ui six column stackable center aligned page grid">
             <div class="column sixteen wide">
               <div
-                v-bind:class="{ error: errors.email }"
+                v-bind:class="{ error: v$.form.email.$error }"
                 class="ui fluid labeled input large"
               >
                 <div class="ui label">e-mail</div>
                 <input
                   type="text"
                   placeholder="email"
-                  @change="handleChange"
-                  @blur="handleBlur"
                   ref="email"
                   name="email"
+                  v-model="v$.form.email.$model"
                 />
+              </div>
+              <div v-if="v$.form.email.$error">
+                <div
+                  v-if="v$.form.email.required.$invalid"
+                  class="ui label red floated left"
+                  style="margin-top: 10px"
+                >
+                  e-mail is required
+                </div>
+
+                <div
+                  v-if="v$.form.email.email.$invalid"
+                  class="ui label red floated left"
+                  style="margin-top: 10px"
+                >
+                  e-mail is not valid.
+                </div>
               </div>
             </div>
 
             <div class="column sixteen wide">
               <div
-                v-bind:class="{ error: errors.email }"
+                v-bind:class="{ error: v$.form.username.$error }"
                 class="ui fluid labeled input large"
               >
                 <div class="ui label">username</div>
                 <input
                   type="text"
                   placeholder="username"
-                  @change="handleChange"
-                  @blur="handleBlur"
                   ref="username"
                   name="username"
+                  v-model="v$.form.username.$model"
                 />
+              </div>
+
+              <div v-if="v$.form.username.$error">
+                <div
+                  v-if="v$.form.username.required.$invalid"
+                  class="ui label red floated left"
+                  style="margin-top: 10px"
+                >
+                  username is required
+                </div>
+
+                <div
+                  v-if="v$.form.username.min.$invalid"
+                  class="ui label red floated left"
+                  style="margin-top: 10px"
+                >
+                  username at least must be greater than 4 characters.
+                </div>
               </div>
             </div>
 
             <div class="column sixteen wide">
               <div
-                v-bind:class="{ error: errors.password }"
+                v-bind:class="{ error: v$.form.password.$error }"
                 class="ui labeled fluid input large"
               >
                 <div class="ui label">password</div>
                 <input
                   type="password"
                   placeholder="password"
-                  @change="handleChange"
-                  @blur="handleBlur"
                   ref="password"
                   name="password"
+                  v-model="v$.form.password.$model"
                 />
+              </div>
+              <div v-if="v$.form.password.$error">
+                <div
+                  v-if="v$.form.password.required.$invalid"
+                  class="ui label red floated left"
+                  style="margin-top: 10px"
+                >
+                  password is required
+                </div>
+
+                <div
+                  v-if="v$.form.password.min.$invalid"
+                  class="ui label red floated left"
+                  style="margin-top: 10px"
+                >
+                  password at least must be greater than 6 characters.
+                </div>
               </div>
             </div>
             <div class="column sixteen wide">
@@ -76,7 +125,11 @@
             </div>
 
             <div class="column sixteen wide">
-              <button class="primary fluid large ui button" type="submit">
+              <button
+                class="primary fluid large ui button"
+                :disabled="v$.form.$invalid"
+                type="submit"
+              >
                 register
               </button>
             </div>
@@ -88,97 +141,54 @@
   </div>
 </template>
 <script>
-import { defineComponent, ref } from '@vue/runtime-core';
+import { defineComponent } from '@vue/runtime-core';
+import { email, required, minLength, maxLength } from '@vuelidate/validators';
+import { useVuelidate } from '@vuelidate/core';
+
 export default defineComponent({
   name: 'SignUp',
-  components: {
-    // CustomInput,
-  },
+  components: {},
   props: ['click'],
   setup() {
-    const EMAIL_REGEX =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-    const state = ref({
-      email: '',
-      username: '',
-      password: '',
-    });
-
-    const errors = ref({
-      email: '',
-      username: '',
-      password: '',
-    });
-
-    const handleChange = (e) => {
-      state.value = {
-        ...state.value,
-        [e.target.name]: e.target.value,
-      };
-    };
-
-    const handleBlur = () => {
-      if (
-        state.value.email.trim().length === 0 &&
-        state.value.password.trim().length === 0 &&
-        state.value.username.trim().length === 0
-      ) {
-        errors.value = {
-          ...errors.value,
-          email: 'email is required',
-          password: 'password is required',
-          username: 'username is required',
-        };
-        return false;
-      } else if (!EMAIL_REGEX.test(state.value.email)) {
-        errors.value = {
-          ...errors.value,
-          email: 'please provide valid e-mail address',
-        };
-        return false;
-      } else if (errors.value.password.length < 6) {
-        errors.value = {
-          ...errors.value,
-          password: 'password must be at least 6 characters',
-        };
-        return false;
-      } else if (errors.value.username.length < 5) {
-        errors.value = {
-          ...errors.value,
-          username: 'username must be at least 5 characters',
-        };
-        return false;
-      } else {
-        errors.value = {
-          email: '',
-          password: '',
-          username: '',
-        };
-        return true;
-      }
-    };
-
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      if (handleBlur()) {
-        console.log('is valid!');
-      }
-    };
-
     return {
-      handleChange,
-      errors,
-      handleBlur,
-      handleSubmit,
+      v$: useVuelidate(),
+    };
+  },
+  data() {
+    return {
+      form: {
+        email: '',
+        username: '',
+        password: '',
+      },
+    };
+  },
+  methods: {
+    handleSubmit(e) {
+      console.log('eee', e);
+    },
+  },
+  validations() {
+    return {
+      form: {
+        email: {
+          required,
+          email,
+        },
+        password: {
+          required,
+          min: minLength(6),
+        },
+        username: {
+          required,
+          min: minLength(4),
+        },
+      },
     };
   },
   beforeMount() {
     // this.$ref.email.focus();
     console.log('ulaa');
-  },
-  mounted() {
-    this.$refs.email.focus();
   },
 });
 </script>

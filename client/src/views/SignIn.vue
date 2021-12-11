@@ -13,7 +13,7 @@
             </p>
           </div>
         </div>
-        <form @submit="handleSubmit">
+        <form @submit.prevent="handleSubmit">
           <div class="ui five column stackable center aligned page grid">
             <div class="column sixteen wide">
               <div
@@ -51,17 +51,16 @@
 
             <div class="column sixteen wide">
               <div
-                v-bind:class="{ error: errors.password }"
+                v-bind:class="{ error: v$.form.email.$error }"
                 class="ui labeled fluid input large"
               >
                 <div class="ui label">password</div>
                 <input
                   type="password"
                   placeholder="password"
-                  @change="handleChange"
-                  @blur="handleBlur"
                   ref="password"
                   name="password"
+                  v-model="v$.form.password.$model"
                 />
               </div>
             </div>
@@ -97,6 +96,11 @@ export default defineComponent({
       },
     };
   },
+  methods: {
+    focusEmail() {
+      this.$refs.email.focus();
+    },
+  },
   validations() {
     return {
       form: {
@@ -111,17 +115,14 @@ export default defineComponent({
       },
     };
   },
-  beforeMount() {
-    // this.$ref.email.focus();
-    console.log('ulaa');
-  },
   mounted() {
-    this.$refs.email.focus();
+    this.focusEmail();
   },
 });
 </script>
 
 <style lang="scss" scoped>
+@import '../styles/global.scss';
 .root {
   width: 100%;
   height: calc(100vh - 60px);

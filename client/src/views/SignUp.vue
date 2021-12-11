@@ -8,8 +8,10 @@
           </div>
           <div class="column sixteen wide">
             <p class="heading">
-              you already have account?
-              <router-link to="/sign-in"> sign-in </router-link>
+              you already have an account?
+              <router-link to="/sign-in" class="router-link">
+                sign-in
+              </router-link>
             </p>
           </div>
         </div>
@@ -167,6 +169,9 @@ export default defineComponent({
     handleSubmit(e) {
       console.log('eee', e);
     },
+    focusEmail() {
+      this.$refs.email.focus();
+    },
   },
   validations() {
     return {
@@ -186,9 +191,8 @@ export default defineComponent({
       },
     };
   },
-  beforeMount() {
-    // this.$ref.email.focus();
-    console.log('ulaa');
+  mounted() {
+    this.focusEmail();
   },
 });
 </script>
@@ -214,6 +218,9 @@ export default defineComponent({
 
   .box {
     background-color: red;
+  }
+  .router-link {
+    @include underline_effect(1em, 1px);
   }
 }
 </style>

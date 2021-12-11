@@ -22,3 +22,26 @@ $tablet: 900px;
   height: 100%;
   width: 100%;
 }
+
+@mixin underline_effect($fontsize, $height) {
+  display: inline-block;
+  position: relative;
+  color: #0087ca;
+  font-size: $fontsize;
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: $height;
+    bottom: 0;
+    left: 0;
+    background-color: #0087ca;
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+  }
+  &:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+}

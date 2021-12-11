@@ -2,7 +2,7 @@
   <nav class="nav-container">
     <div class="logo">
       <router-link to="/" class="logo">
-        <p>learning vue.js (note app)</p>
+        <p>#notevue</p>
       </router-link>
     </div>
     <div class="links">

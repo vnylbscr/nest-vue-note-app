@@ -1,20 +1,22 @@
 <template>
   <div class="root">
-    <div class="ui equal width center aligned padded grid">
+    <div class="ui equal width stackable center aligned padded grid">
       <div class="row">
-        <div class="two ui column stackable center end aligned grid">
+        <div class="two ui column center end aligned grid">
           <div class="column twelve wide">
             <h1 class="ui header">register note app.</h1>
           </div>
           <div class="column sixteen wide">
             <p class="heading">
               don't have account?
-              <router-link to="/sign-up"> create </router-link>
+              <router-link to="/sign-up" class="animated-link">
+                create
+              </router-link>
             </p>
           </div>
         </div>
         <form @submit.prevent="handleSubmit">
-          <div class="ui five column stackable center aligned page grid">
+          <div class="ui five column center aligned page grid">
             <div class="column sixteen wide">
               <div
                 v-bind:class="{ error: v$.form.email.$error }"
@@ -51,7 +53,7 @@
 
             <div class="column sixteen wide">
               <div
-                v-bind:class="{ error: v$.form.email.$error }"
+                v-bind:class="{ error: v$.form.password.$error }"
                 class="ui labeled fluid input large"
               >
                 <div class="ui label">password</div>
@@ -66,7 +68,7 @@
             </div>
             <div class="column sixteen wide">
               <button class="primary fluid large ui button" type="submit">
-                Submit
+                login
               </button>
             </div>
           </div>
@@ -75,13 +77,13 @@
     </div>
   </div>
 </template>
+
 <script>
 import { defineComponent } from '@vue/runtime-core';
 import useVuelidate from '@vuelidate/core';
 import { required, minLength, email } from '@vuelidate/validators';
 export default defineComponent({
   name: 'SignIn',
-  components: {},
   props: ['click'],
   setup() {
     return {
@@ -99,6 +101,20 @@ export default defineComponent({
   methods: {
     focusEmail() {
       this.$refs.email.focus();
+    },
+    handleSubmit(e) {
+      const store = this.$store;
+      if (this.v$.$invalid) {
+        this.v$.form.$touch();
+        return;
+      } else {
+        store.dispatch({
+          type: 'login',
+          payload: {
+            ...this.form,
+          },
+        });
+      }
     },
   },
   validations() {
@@ -128,6 +144,7 @@ export default defineComponent({
   height: calc(100vh - 60px);
   align-items: center;
   justify-content: center;
+  font-size: 16px;
   display: flex;
   background: rgb(212, 174, 238);
   background: linear-gradient(
@@ -136,8 +153,17 @@ export default defineComponent({
     rgba(153, 210, 184, 0.68531162464986) 88%
   );
 
+  .submit-error {
+    color: red;
+    font-size: 2em;
+    margin: 24px 8px;
+  }
+
   .box {
     background-color: red;
+  }
+  .animated-link {
+    @include underline_effect(14px, 2px);
   }
 }
 </style>

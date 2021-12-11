@@ -1,13 +1,17 @@
 <template>
   <nav class="nav-container">
-    <div class="logo">
-      <router-link to="/" class="logo">
-        <p>#notevue</p>
-      </router-link>
-    </div>
-    <div class="links">
-      <nav-link :href="'/sign-up'" :name="'register'" />
-      <nav-link :href="'/sign-in'" :name="'login'" />
+    <div class="ui grid">
+      <div class="seven column row">
+        <div class="left three floated column">
+          <router-link to="/" class="logo">
+            <p>#notevue</p>
+          </router-link>
+        </div>
+        <div class="right floated column">
+          <nav-link :href="'/sign-up'" :name="'register'" />
+          <nav-link :href="'/sign-in'" :name="'login'" />
+        </div>
+      </div>
     </div>
   </nav>
 </template>
@@ -34,8 +38,6 @@ export default {
   height: 60px;
   padding: 8px 16px;
   background-color: cadetblue;
-  display: flex;
-  align-items: center;
   .logo {
     width: 90%;
     text-decoration: none;
@@ -48,12 +50,6 @@ export default {
         cursor: pointer;
       }
     }
-  }
-  .links {
-    width: 10%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
   }
 }
 </style>

@@ -120,18 +120,23 @@
               <p class="heading">
                 by registering you confirm our privacy policy.
               </p>
-              <div class="ui checkbox">
-                <input type="checkbox" name="example" />
+              <div class="ui checkbox input">
+                <input
+                  type="checkbox"
+                  v-model="v$.form.terms.$model"
+                  name="terms"
+                  ref="terms"
+                />
                 <label>i confirm privacy policy</label>
+              </div>
+
+              <div v-if="v$.form.terms.$error" class="terms-error">
+                please confirm terms and private policy.
               </div>
             </div>
 
             <div class="column sixteen wide">
-              <button
-                class="primary fluid large ui button"
-                :disabled="v$.form.$invalid"
-                type="submit"
-              >
+              <button class="primary fluid large ui button" type="submit">
                 register
               </button>
             </div>
@@ -144,13 +149,12 @@
 </template>
 <script>
 import { defineComponent } from '@vue/runtime-core';
-import { email, required, minLength, maxLength } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
+import { email, minLength, required, sameAs } from '@vuelidate/validators';
 
 export default defineComponent({
   name: 'SignUp',
   components: {},
-  props: ['click'],
   setup() {
     return {
       v$: useVuelidate(),
@@ -162,12 +166,22 @@ export default defineComponent({
         email: '',
         username: '',
         password: '',
+        terms: null,
       },
     };
   },
   methods: {
     handleSubmit(e) {
-      console.log('eee', e);
+      const store = this.$store;
+      if (this.v$.$invalid) {
+        this.v$.form.$touch();
+        return;
+      } else {
+        store.commit('register', {
+          user: this.form,
+          token: '123123123123123213',
+        });
+      }
     },
     focusEmail() {
       this.$refs.email.focus();
@@ -188,6 +202,9 @@ export default defineComponent({
           required,
           min: minLength(4),
         },
+        terms: {
+          required: sameAs(true),
+        },
       },
     };
   },
@@ -205,6 +222,7 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
   display: flex;
+  font-size: 14px;
   background: rgb(212, 174, 238);
   background: linear-gradient(
     90deg,
@@ -216,11 +234,17 @@ export default defineComponent({
     padding: 24px;
   }
 
+  .terms-error {
+    color: red;
+    font-size: 1em;
+    font-weight: bold;
+    margin-top: 0.5em;
+  }
   .box {
     background-color: red;
   }
   .router-link {
-    @include underline_effect(1em, 1px);
+    @include underline_effect(14px, 2px);
   }
 }
 </style>

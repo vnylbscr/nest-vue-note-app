@@ -1,5 +1,7 @@
 import { createStore } from 'vuex';
 import VuexPersistence from 'vuex-persist';
+import axios from 'axios';
+import { API_URL } from '../lib/config';
 
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage,
@@ -7,23 +9,38 @@ const vuexLocal = new VuexPersistence({
 
 export default createStore({
   state: {
-    user: {},
+    user: null,
+    token: null,
     count: 0,
   },
   mutations: {
-    personLogin(state, action) {
-      state.user = action.payload;
+    register(state, { user, token }) {
+      state.user = user;
+      state.token = token;
     },
-    //eslint-disable-next-line
-    personSignOut(state, action) {
-      state.user = {};
+    login(state, { user, token }) {
+      state.user = user;
+      state.token = token;
+    },
+    signOut(state) {
+      state.user = null;
+      state.token = null;
     },
     increment(state, payload) {
       console.log('action payload', payload);
       state.count++;
     },
   },
-  actions: {},
+  actions: {
+    login: async (context, { payload }) => {
+      const user = 'merto';
+      const token = 'token';
+
+      console.log('payload action', payload);
+
+      axios.get(API_URL);
+    },
+  },
   modules: {},
   plugins: [vuexLocal.plugin],
 });

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/model/user.entity';
 import { Repository } from 'typeorm';
@@ -53,7 +53,7 @@ export class UserService {
     });
 
     if (!foundUser) {
-      throw new Error('user not exist');
+      throw new Error('User not found. Please check your information.');
     }
 
     const isValidPassword = await comparePasswords(
@@ -62,7 +62,10 @@ export class UserService {
     );
 
     if (!isValidPassword) {
-      throw new Error('email or password is incorrect');
+      return new BadRequestException({
+        message:
+          'E-mail or password is incorrect. However, I can not say which one.',
+      });
     }
 
     const person = {
@@ -74,7 +77,26 @@ export class UserService {
     return person;
   }
 
+  public async register(email: string, username: string, password: string) {
+    const foundUser = await this.repository.findOne({
+      email,
+    });
+
+    if (foundUser) {
+      throw new Error('User already exist.');
+    }
+
+    const person = await this.createUser({
+      email,
+      fullName: username,
+      password,
+    });
+
+    return person;
+  }
   public async getAll() {
-    return await this.repository.find();
+    return await this.repository.find({
+      select: ['email', 'fullName', 'createdAt', 'id', 'notes'],
+    });
   }
 }

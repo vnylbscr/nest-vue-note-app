@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { Request } from 'express';
 @Controller('users')
@@ -12,21 +20,39 @@ export class UserController {
 
   @Get('/:id')
   async getUser(@Req() req: Request) {
-    const { id } = req.params;
-    return await this.userService.getUser(id);
+    try {
+      const { id } = req.params;
+      return await this.userService.getUser(id);
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: error.code,
+          error: error.message,
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
   }
 
-  @Post('/')
-  async createUser(
-    @Body('fullName') fullName: string,
+  @Post('/register')
+  async register(
+    @Body('username') username: string,
     @Body('password') password: string,
     @Body('email') email: string,
   ) {
-    return await this.userService.createUser({
-      fullName,
-      password,
-      email,
-    });
+    try {
+      return await this.userService.register(email, username, password);
+    } catch (res) {
+      console.log('error is', res);
+
+      throw new HttpException(
+        {
+          status: res.status,
+          error: res.message,
+        },
+        res.status,
+      );
+    }
   }
 
   @Post('/login')
@@ -34,6 +60,17 @@ export class UserController {
     @Body('password') password: string,
     @Body('email') email: string,
   ) {
-    return await this.userService.login(email, password);
+    try {
+      return await this.userService.login(email, password);
+    } catch (error) {
+      console.log('error is', error);
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: error.message,
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
   }
 }

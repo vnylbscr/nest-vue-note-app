@@ -57,9 +57,7 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.authRequired)) {
     console.log('user is', user);
     if (!user) {
-      next({
-        path: '/sign-in',
-      });
+      next();
     } else {
       next({
         path: '/admin',

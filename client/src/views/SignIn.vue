@@ -65,11 +65,37 @@
                   v-model="v$.form.password.$model"
                 />
               </div>
+              <div v-if="v$.form.password.$error">
+                <div
+                  v-if="v$.form.password.required.$invalid"
+                  class="ui label red floated left"
+                  style="margin-top: 10px"
+                >
+                  password is required
+                </div>
+
+                <div
+                  v-if="v$.form.password.min.$invalid"
+                  class="ui label red floated left"
+                  style="margin-top: 10px"
+                >
+                  password must be at least 6 characters.
+                </div>
+              </div>
             </div>
             <div class="column sixteen wide">
-              <button class="primary fluid large ui button" type="submit">
+              <button
+                class="primary fluid large ui button"
+                v-bind:class="{ loading: loading }"
+                type="submit"
+              >
                 login
               </button>
+            </div>
+          </div>
+          <div v-if="errorMessage" class="ui grid">
+            <div class="column sixteen wide red">
+              {{ errorMessage }}
             </div>
           </div>
         </form>
@@ -82,6 +108,8 @@
 import { defineComponent } from '@vue/runtime-core';
 import useVuelidate from '@vuelidate/core';
 import { required, minLength, email } from '@vuelidate/validators';
+import axios from 'axios';
+import { API_URL } from '../lib/config';
 export default defineComponent({
   name: 'SignIn',
   props: ['click'],
@@ -96,24 +124,36 @@ export default defineComponent({
         email: '',
         password: '',
       },
+      loading: false,
+      errorMessage: '',
     };
   },
   methods: {
     focusEmail() {
       this.$refs.email.focus();
     },
-    handleSubmit(e) {
+    async handleSubmit(e) {
       const store = this.$store;
       if (this.v$.$invalid) {
         this.v$.form.$touch();
         return;
       } else {
-        store.dispatch({
-          type: 'login',
-          payload: {
+        try {
+          this.loading = true;
+          const res = await axios.post(`${API_URL}/users/login`, {
             ...this.form,
-          },
-        });
+          });
+          if (res.status !== 200) {
+            this.errorMessage = res.data.message;
+          } else {
+            console.log('login success!');
+          }
+        } catch (error) {
+          console.log('error', error);
+          this.errorMessage = error;
+        } finally {
+          this.loading = false;
+        }
       }
     },
   },

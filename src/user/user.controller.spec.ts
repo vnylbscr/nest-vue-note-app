@@ -27,7 +27,7 @@ describe('UserController', () => {
     const fullName = 'agalarla dans';
     const email = 'test@test.com';
     const password = '123123';
-    const savedUser = await controller.createUser(fullName, email, password);
+    const savedUser = await controller.register(fullName, email, password);
     expect(savedUser.email).toEqual(email);
   });
 });

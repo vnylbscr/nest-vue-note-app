@@ -11,7 +11,7 @@ export default createStore({
   state: {
     user: null,
     token: null,
-    count: 0,
+    notes: [],
   },
   mutations: {
     register(state, { user, token }) {
@@ -26,19 +26,42 @@ export default createStore({
       state.user = null;
       state.token = null;
     },
-    increment(state, payload) {
-      console.log('action payload', payload);
-      state.count++;
+    addNote(state, { note }) {
+      state.notes.push(note);
+    },
+    deleteNote(state, { noteId }) {
+      state.notes = state.notes.filter((item) => item.id !== noteId);
+    },
+    updateNote(state, { note }) {
+      state.notes = state.notes.map((item) =>
+        item.id === note.id ? { ...item, ...note } : item,
+      );
     },
   },
   actions: {
-    login: async (context, { payload }) => {
-      const user = 'merto';
-      const token = 'token';
+    login: async (context, { payload: { user, token } }) => {
+      context.commit('login', {
+        user,
+        token,
+      });
+    },
+    register: async (context, { payload: { user, token } }) => {
+      context.commit('register', {
+        user,
+        token,
+      });
+    },
+    signOut: async (context) => {
+      context.commit('signOut');
+    },
+    addNote: async (context, { payload }) => {
+      const res = await axios.get(`${API_URL}/note`, {
+        ...payload,
+      });
 
-      console.log('payload action', payload);
-
-      axios.get(API_URL);
+      if (res.status === 200) {
+        context.commit('addNote', res.data);
+      }
     },
   },
   modules: {},

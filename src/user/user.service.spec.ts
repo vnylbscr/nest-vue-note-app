@@ -1,15 +1,26 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { User } from 'src/model/user.entity';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
   let service: UserService;
 
+  const userMockRepository = {};
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UserService],
-      controllers: [UserController],
-    }).compile();
+      providers: [
+        UserService,
+        {
+          provide: getRepositoryToken(User),
+          useValue: userMockRepository,
+        },
+      ],
+    })
+      .overrideProvider(getRepositoryToken(User))
+      .useValue(userMockRepository)
+      .compile();
 
     service = module.get<UserService>(UserService);
   });
